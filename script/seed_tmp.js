@@ -8,13 +8,6 @@ const {
 
 const randomWords = require("random-words");
 
-
-//random number generator
-const makeRandomNumber = (num = 1000) => {
-  const randomNum = Math.floor(Math.random() * num);
-  return randomNum;
-};
-
 //  Create Categories for testing
 
 const avaliableCategories = [
@@ -25,23 +18,6 @@ const avaliableCategories = [
   "electronics",
 ];
 
-//need assign quantity later (goes by every 4)
-const availableProducts = [
-  ['Ticonderoga Pencil', 'This smooth-writing quality pencil features the classic yellow hexagonal shape', 4.29, 'https://i5.walmartimages.com/asr/d5a4a1fe-1358-4a3f-be15-82f791c13645.72af1ce7843bf5a94cffac1712492dfd.jpeg'],
-  ["Pilot G2 Gel Pen", "Gel ink pens for the ultimate overachiever", 6.29, "https://m.media-amazon.com/images/I/71K3-UxL0nL._AC_SS450_.jpg"],
-  ['Zebra F-701 Pen', "Stainless steel from tip to clip", 8.49, "https://www.zebrapen.com/wp-content/uploads/2013/12/F-701-resized-500x500.jpg"],
-  ['Pencil Sharpener', 'Battery-powered pencil sharpener recommended for personal or home office use', 22.99, "https://www.staples-3p.com/s7/is/image/Staples/sp41688198_sc7?wid=512&hei=512"],
-  ["Multipurpose Paper", 'Reliable multipurpose paper is engineered for use in printers, fax machines, and copiers', 11.49, 'https://www.staples-3p.com/s7/is/image/Staples/s0309508_sc7?wid=512&hei=512'],
-  ['TRU RED™ 8.5" x 11" Copy Paper', 53.49, 'Reliable printer paper that is best for black & white printing', 'https://bndlbuyapp.net/wp-content/uploads/s1181391_sc7.jpeg'],
-  ['Astrobrights Colored Paper', 'Astrobrights paper in Solar Yellow is great for school projects, flyers, brochures, signs, coupons and posters.', 22.99, 'https://www.officecrave.com/image/data/product_image/263989.JPG'],
-  ['Bulk Multipurpose Paper', 'Reliable multipurpose paper is engineered for use in printers, fax machines, and copiers', 32.49, 'https://www.quill.com/is/image/Quill/sp123233208_s7?iv=RLYpN3&wid=1080&hei=1080&fit=fit,1'],
-  ['Dry-Erase Whiteboard', 'Suitable for light use in personal or low traffic environments for easy erasable writing', 139.99, 'https://www.staples-3p.com/s7/is/image/Staples/s1219579_sc7?wid=512&hei=512'],
-  ["3-Drawer Vertical File Cabinet", 'Cabinet with three drawers for organization', 147.99, 'https://m.media-amazon.com/images/I/41QIUoS0h0L._AC_SX466_.jpg'],
-  ['Black & Decker LED Desk Lamp', 'LED gooseneck desk lamp is great for sleek, modern spaces', 53.99, 'https://images.thdstatic.com/productImages/f916a4b9-8283-4cf2-9fba-11e4414aa34b/svn/gray-black-decker-desk-lamps-vled1812gray-bd-64_600.jpg'],
-  ['Union & Scale™ Adjustable Desk', 'Desktop height range: 25.9"-51.5"', 499.99, 'https://www.staples-3p.com/s7/is/image/Staples/s1201494_sc7?wid=512&hei=512'],
-
-]
-
 //  Create Developer accounts for testing
 
 const createDeveloperAccounts = async () => {
@@ -50,27 +26,91 @@ const createDeveloperAccounts = async () => {
     password: "123",
     type: "admin",
     email: "admin@admin.com",
-    address: "123 Cool Lane, Boston, MA",
+    address: makeRandomAddress(),
   };
 
   const customer = {
     username: "customer",
     password: "123",
     type: "customer",
-    email: 'customer@gmail.com',
-    address: "123 Chill Lane, Boston, MA",
+    email: makeRandomEmail(),
+    address: makeRandomAddress(),
   };
 
   await User.create(admin);
   await User.create(customer);
 };
 
+// Random Field Makers
 
+const makeRandomName = (num = 2, joiningStr = " ") => {
+  const name = randomWords(num).join(joiningStr);
+  return name;
+};
+
+const makeRandomEmail = (num = 2, joiningStr = "-") => {
+  const email = randomWords(num).join(joiningStr) + "@gmail.com";
+  return email;
+};
+
+const makeRandomAddress = (num = 1) => {
+  const number = Math.floor(Math.random() * 1000);
+  const street = randomWords(num);
+  return `${number} ${street} street`;
+};
+
+const makeUserType = () => {
+  const num = 1 + Math.floor(Math.random() * 4);
+  switch (num) {
+    case 1:
+      return "guest";
+    case 2:
+      return "customer";
+    case 3:
+      return "admin";
+    default:
+      return "customer";
+  }
+};
+
+const makeUser = () => {
+  const user = {
+    username: makeRandomName(),
+    password: "123",
+    type: makeUserType(),
+    email: makeRandomEmail(),
+    address: makeRandomAddress(),
+  };
+  return user;
+};
+
+const makeProduct = () => {
+  const product = {
+    name: makeRandomName(1),
+    description: makeRandomName(10),
+    price: Math.floor(Math.random() * (100000 - 1) + 1) / 100,
+    quantity: makeRandomNumber(),
+  };
+  return product;
+};
+
+const makeRandomNumber = (num = 1000) => {
+  const randomNum = Math.floor(Math.random() * num);
+  return randomNum;
+};
 
 // Model Generators
 
+// generate 100 by default
+const generateTestUsers = (thisMany = 100) => {
+  const arrayOfTestUsers = [];
+  for (let i = 0; i < thisMany; i++) {
+    arrayOfTestUsers.push(makeUser());
+  }
+  return arrayOfTestUsers;
+};
 
-// generate 20 by default
+// generate 100 by default
 const generateTestProducts = (thisMany = 100) => {
   const arrayOfTestProducts = [];
   for (let i = 0; i < thisMany; i++) {
@@ -92,6 +132,19 @@ const uploadCategories = async data => {
   );
 };
 
+const uploadTestUsers = async data => {
+  if (!Array.isArray(data)) {
+    console.log("uploadTestUsers requires an Array");
+    return;
+  }
+  await Promise.all(
+    data.map(async user => {
+      console.log(`USER: ${user.username} \n is being created`);
+      const singleUser = await User.create(user);
+      return singleUser;
+    })
+  );
+};
 
 const uploadTestProducts = async data => {
   if (!Array.isArray(data)) {
