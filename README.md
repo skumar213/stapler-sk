@@ -17,7 +17,7 @@ Stapler was built using React and Redux for state management on the front-end, a
 3. Use `npm run start:dev` to start a local server (on port 8080)
 
 
-# Demo here: https://stapler-graceshopper.herokuapp.com
+# Demo here: https://stapler-sk.herokuapp.com
 
 # Team
 1. Sabi Kumar: https://github.com/skumar213 | http://www.linkedin.com/in/skumar213
