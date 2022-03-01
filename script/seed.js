@@ -193,7 +193,7 @@ const createCategories = async () => {
 //Create Products
 const createProducts = async () => {
   for (let i = 0; i < availableProducts.length; i++) {
-    let categoryIndex;
+    let categoryIndex = 0;
 
     if (i < 4) {
       categoryIndex = 0;
@@ -201,8 +201,10 @@ const createProducts = async () => {
       categoryIndex = 1;
     } else if (i >= 8 && i < 12) {
       categoryIndex = 2;
-    } else if (i >= 12) {
+    } else if (i >= 12 && i < 16) {
       categoryIndex = 3;
+    } else if (i >= 16) {
+      categoryIndex = 4;
     }
 
     const category = await Category.findOne({
